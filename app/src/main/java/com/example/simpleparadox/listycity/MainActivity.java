@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -45,10 +46,24 @@ public class MainActivity extends AppCompatActivity implements AddCityFragment.O
                 new AddCityFragment().show(getSupportFragmentManager(), "ADD_CITY");
             }
         });
+
+        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                City selectedCity = (City) parent.getItemAtPosition(position);
+                selectedCity.setPosition(position);
+                new AddCityFragment(selectedCity).show(getSupportFragmentManager(), "ADD_CITY");
+            }
+        });
     }
 
     @Override
     public void onOkPressed(City newCity) {
-        cityAdapter.add(newCity);
+        if (newCity.getPosition() == -1) {
+            cityAdapter.add(newCity);
+        } else {
+            dataList.set(newCity.getPosition(), newCity);
+            cityAdapter.notifyDataSetChanged();
+        }
     }
 }
